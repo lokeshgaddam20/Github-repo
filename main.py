@@ -1,5 +1,6 @@
 import requests
 import json
+import sys
 
 def get_repo_stats(owner, repo, token=None):
     """
@@ -74,15 +75,29 @@ def get_repo_stats(owner, repo, token=None):
         return None
 
 def main():
-    # Configuration
-    GITHUB_TOKEN = "your_github_token_here"  # Replace with your token
-    OWNER = "octocat"  # Replace with repo owner
-    REPO = "Hello-World"  # Replace with repo name
+    # Check command line arguments
+    if len(sys.argv) != 2:
+        print("Usage: python main.py <owner/repo>")
+        print("Example: python main.py octocat/Hello-World")
+        sys.exit(1)
     
-    print(f"Fetching stats for {OWNER}/{REPO}...")
+    # Parse owner/repo from command line
+    try:
+        owner, repo = sys.argv[1].split('/')
+        if not owner or not repo:
+            raise ValueError("Invalid format")
+    except ValueError:
+        print("Error: Please provide repository in format 'owner/repo'")
+        print("Example: python main.py octocat/Hello-World")
+        sys.exit(1)
+    
+    # Configuration
+    GITHUB_TOKEN = "your_github_token_here"  # Replace with your token or set to None
+    
+    print(f"Fetching stats for {owner}/{repo}...")
     
     # Fetch stats
-    stats = get_repo_stats(OWNER, REPO, GITHUB_TOKEN)
+    stats = get_repo_stats(owner, repo, GITHUB_TOKEN)
     
     if stats:
         print("\n" + "="*50)
