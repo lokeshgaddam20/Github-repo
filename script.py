@@ -12,16 +12,17 @@ def is_coding_file(file_path):
         '.py', '.js', '.jsx', '.ts', '.tsx', '.java', '.c', '.h', '.cpp', '.cxx', 
         '.cc', '.hpp', '.cs', '.go', '.rs', '.php', '.rb', '.pl', '.sh', '.bash',
         '.r', '.m', '.sql', '.lua', '.hs', '.coffee', '.scala', '.kt', '.swift', 
-        '.html', '.css', '.xml', '.json', '.yaml', '.yml', 'md', '.dart',
+        '.html', '.css', '.xml', '.json', '.yaml', '.yml', '.md', '.dart',
         '.dart', '.elm', '.clj', '.ex', '.erl', '.f90', '.pas', '.vb', '.asm'
     }
     return file_path.suffix.lower() in coding_extensions
 
 def count_lines(file_path):
-    """Count total lines in a file."""
+    """Count non-blank lines in a file."""
     try:
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-            return len(f.readlines())
+            non_blank_lines = sum(1 for line in f if line.strip())
+            return non_blank_lines
     except:
         return 0
 
@@ -64,7 +65,7 @@ def main():
                     file_count += 1
                     print(f"{file_path.name}: {lines}")
         
-        print(f"\nTotal: {total_lines} lines in {file_count} files")
+        print(f"\nTotal: {total_lines} non-blank lines in {file_count} files")
         
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
