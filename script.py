@@ -1,74 +1,135 @@
-#!/usr/bin/env python3
 import os
 import sys
-import tempfile
-import shutil
 import subprocess
+import shutil
+import json
+import requests
 from pathlib import Path
 
-def is_coding_file(file_path):
-    """Check if file is a coding file based on extension."""
-    coding_extensions = {
-        '.py', '.js', '.jsx', '.ts', '.tsx', '.java', '.c', '.h', '.cpp', '.cxx', 
-        '.cc', '.hpp', '.cs', '.go', '.rs', '.php', '.rb', '.pl', '.sh', '.bash',
-        '.r', '.m', '.sql', '.lua', '.hs', '.coffee', '.scala', '.kt', '.swift', 
-        '.html', '.css', '.xml', '.json', '.yaml', '.yml', '.md', '.dart',
-        '.dart', '.elm', '.clj', '.ex', '.erl', '.f90', '.pas', '.vb', '.asm'
-    }
-    return file_path.suffix.lower() in coding_extensions
-
-def count_lines(file_path):
-    """Count non-blank lines in a file."""
+def clone_repo(owner, repo, token, temp_dir="temp_repo"):
+    """Clone repository using HTTPS with PAT"""
+    https_url = f"https://{token}@github.com/{owner}/{repo}.git"
+    
+    if os.path.exists(temp_dir):
+        shutil.rmtree(temp_dir)
+    
     try:
-        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-            non_blank_lines = sum(1 for line in f if line.strip())
-            return non_blank_lines
+        print(f"Cloning {owner}/{repo}...")
+        subprocess.run(["git", "clone", https_url, temp_dir], 
+                      capture_output=True, text=True, check=True)
+        return temp_dir
+    except subprocess.CalledProcessError:
+        print("Failed to clone repository")
+        return None
+
+def count_lines_in_file(file_path):
+    """Count non-blank lines in a file"""
+    try:
+        with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
+            return sum(1 for line in file if line.strip())
     except:
         return 0
 
-def clone_repo(repo_url, temp_dir):
-    """Clone GitHub repository."""
+def is_code_file(file_path):
+    """Check if file is a code file"""
+    skip_patterns = ['.git', '__pycache__', 'node_modules', '.venv', 'dist', 'build']
+    file_str = str(file_path)
+    
+    for pattern in skip_patterns:
+        if pattern in file_str:
+            return False
+    
+    code_extensions = {
+        '.py', '.js', '.ts', '.jsx', '.tsx', '.java', '.c', '.cpp', '.h', '.hpp',
+        '.cs', '.php', '.rb', '.go', '.rs', '.swift', '.kt', '.scala', '.sh',
+        '.html', '.css', '.scss', '.xml', '.json', '.yaml', '.yml', '.sql',
+        '.md', '.txt', '.dockerfile'
+    }
+    
+    return (file_path.suffix.lower() in code_extensions or 
+            file_path.name.lower() in ['makefile', 'dockerfile'])
+
+def calculate_loc(repo_path):
+    """Calculate lines of code in repository"""
+    total_lines = 0
+    file_count = 0
+    file_stats = {}
+    
+    for file_path in Path(repo_path).rglob('*'):
+        if file_path.is_file() and is_code_file(file_path):
+            lines = count_lines_in_file(file_path)
+            if lines > 0:
+                relative_path = str(file_path.relative_to(repo_path))
+                file_stats[relative_path] = lines
+                total_lines += lines
+                file_count += 1
+    
+    return total_lines, file_count, file_stats
+
+def get_repo_info(owner, repo, token):
+    """Get repository info from GitHub API"""
+    url = f"https://api.github.com/repos/{owner}/{repo}"
+    headers = {"Authorization": f"token {token}"}
+    
     try:
-        subprocess.run(['git', 'clone', repo_url, temp_dir], 
-                      check=True, capture_output=True)
-        return True
-    except:
-        return False
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException:
+        return None
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python loc_counter.py <user/repo>")
+        print("Usage: python main.py <owner/repo>")
         sys.exit(1)
-    
-    repo_input = sys.argv[1]
-    if '/' not in repo_input:
-        print("Error: Use user/repo format")
-        sys.exit(1)
-    
-    repo_url = f"https://github.com/{repo_input}.git"
-    temp_dir = tempfile.mkdtemp()
     
     try:
-        print(f"Cloning {repo_input}...")
-        if not clone_repo(repo_url, temp_dir):
-            print("Failed to clone repository")
+        owner, repo = sys.argv[1].split('/')
+    except ValueError:
+        print("Error: Use format 'owner/repo'")
+        sys.exit(1)
+    
+    token = input("Enter GitHub PAT: ").strip()
+    if not token:
+        print("Token required")
+        sys.exit(1)
+    
+    temp_dir = "temp_repo"
+    
+    try:
+        # Get repo info from API
+        repo_info = get_repo_info(owner, repo, token)
+        
+        # Clone repository
+        repo_path = clone_repo(owner, repo, token, temp_dir)
+        if not repo_path:
             sys.exit(1)
         
-        total_lines = 0
-        file_count = 0
+        # Calculate LOC
+        total_lines, file_count, file_stats = calculate_loc(repo_path)
         
-        for file_path in Path(temp_dir).rglob('*'):
-            if file_path.is_file() and is_coding_file(file_path):
-                lines = count_lines(file_path)
-                if lines > 0:
-                    total_lines += lines
-                    file_count += 1
-                    print(f"{file_path.name}: {lines}")
+        # Create result
+        result = {
+            "repository": f"{owner}/{repo}",
+            "total_files": file_count,
+            "total_lines": total_lines,
+            "files": file_stats
+        }
         
-        print(f"\nTotal: {total_lines} non-blank lines in {file_count} files")
+        # Add API info if available
+        if repo_info:
+            result["repo_info"] = {
+                "stars": repo_info.get("stargazers_count", 0),
+                "forks": repo_info.get("forks_count", 0),
+                "language": repo_info.get("language"),
+                "description": repo_info.get("description")
+            }
+        
+        print(json.dumps(result, indent=2))
         
     finally:
-        shutil.rmtree(temp_dir, ignore_errors=True)
+        if os.path.exists(temp_dir):
+            shutil.rmtree(temp_dir)
 
 if __name__ == "__main__":
     main()
