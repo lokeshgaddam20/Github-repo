@@ -1,0 +1,337 @@
+{
+  "metadata": {
+    "analysis_timestamp": "2024-07-16T10:30:00Z",
+    "analysis_version": "1.0.0",
+    "data_sources": ["github_api", "github_graphql", "code_analysis"],
+    "organization": "your-org",
+    "team": "engineering"
+  },
+  
+  "repository": {
+    "basic_info": {
+      "name": "repo-name",
+      "full_name": "org/repo-name",
+      "description": "Repository description",
+      "visibility": "private",
+      "default_branch": "main",
+      "created_at": "2024-01-15T10:00:00Z",
+      "updated_at": "2024-07-16T09:45:00Z",
+      "pushed_at": "2024-07-16T09:30:00Z",
+      "archived": false,
+      "disabled": false,
+      "fork": false,
+      "template": false,
+      "homepage": "https://example.com",
+      "language": "Python",
+      "license": "MIT",
+      "topics": ["api", "microservice", "python"],
+      "readme_exists": true,
+      "size": 15680,
+      "stars": 45,
+      "watchers": 12,
+      "forks": 8
+    },
+    
+    "code_metrics": {
+      "lines_of_code": {
+        "total": 25000,
+        "by_language": {
+          "python": 15000,
+          "javascript": 5000,
+          "html": 3000,
+          "css": 2000
+        },
+        "excluding_comments": 20000,
+        "excluding_blanks": 18000,
+        "test_code": 5000,
+        "documentation": 2000
+      },
+      "complexity": {
+        "cyclomatic_complexity": 2.5,
+        "cognitive_complexity": 3.2,
+        "maintainability_index": 75.5,
+        "technical_debt_ratio": 0.15
+      },
+      "file_metrics": {
+        "total_files": 245,
+        "code_files": 180,
+        "test_files": 35,
+        "config_files": 15,
+        "documentation_files": 15,
+        "average_file_size": 102.04
+      },
+      "duplication": {
+        "percentage": 3.2,
+        "lines_duplicated": 800
+      }
+    },
+    
+    "activity_metrics": {
+      "commits": {
+        "total": 1250,
+        "last_30_days": 45,
+        "last_90_days": 120,
+        "last_year": 800,
+        "by_author": {
+          "dev1": 450,
+          "dev2": 300,
+          "dev3": 250,
+          "dev4": 150,
+          "others": 100
+        },
+        "by_month": {
+          "2024-01": 80,
+          "2024-02": 75,
+          "2024-03": 90,
+          "2024-04": 85,
+          "2024-05": 70,
+          "2024-06": 65,
+          "2024-07": 45
+        },
+        "average_per_day": 1.5
+      },
+      "contributors": {
+        "total": 15,
+        "active_last_30_days": 8,
+        "active_last_90_days": 12,
+        "top_contributors": [
+          {
+            "username": "dev1",
+            "commits": 450,
+            "additions": 25000,
+            "deletions": 8000,
+            "pull_requests": 85
+          },
+          {
+            "username": "dev2", 
+            "commits": 300,
+            "additions": 18000,
+            "deletions": 5000,
+            "pull_requests": 60
+          }
+        ],
+        "bus_factor": 3,
+        "contributor_diversity": 0.65
+      }
+    },
+    
+    "pull_request_metrics": {
+      "total": 285,
+      "open": 12,
+      "closed": 45,
+      "merged": 228,
+      "draft": 3,
+      "metrics": {
+        "average_time_to_merge": 18.5,
+        "average_time_to_first_review": 4.2,
+        "average_time_to_close": 2.1,
+        "merge_rate": 0.85,
+        "average_size": 245.5,
+        "average_comments": 3.8
+      },
+      "review_metrics": {
+        "reviews_per_pr": 2.3,
+        "approval_rate": 0.92,
+        "change_requests_rate": 0.15
+      },
+      "size_distribution": {
+        "xs": 45,
+        "s": 85,
+        "m": 90,
+        "l": 45,
+        "xl": 20
+      }
+    },
+    
+    "issues_metrics": {
+      "total": 180,
+      "open": 25,
+      "closed": 155,
+      "by_label": {
+        "bug": 45,
+        "feature": 68,
+        "enhancement": 35,
+        "documentation": 15,
+        "help wanted": 12,
+        "good first issue": 5
+      },
+      "metrics": {
+        "average_time_to_close": 72.5,
+        "average_time_to_first_response": 8.2,
+        "resolution_rate": 0.86
+      },
+      "priority_distribution": {
+        "critical": 5,
+        "high": 25,
+        "medium": 85,
+        "low": 65
+      }
+    },
+    
+    "security_metrics": {
+      "vulnerabilities": {
+        "total": 8,
+        "critical": 1,
+        "high": 2,
+        "medium": 3,
+        "low": 2,
+        "fixed": 15,
+        "by_package": {
+          "lodash": 2,
+          "requests": 1,
+          "express": 1
+        }
+      },
+      "dependabot": {
+        "enabled": true,
+        "alerts_open": 3,
+        "alerts_fixed": 12,
+        "auto_merge_enabled": true
+      },
+      "code_scanning": {
+        "enabled": true,
+        "alerts_open": 2,
+        "alerts_fixed": 8,
+        "last_scan": "2024-07-16T02:00:00Z"
+      },
+      "secret_scanning": {
+        "enabled": true,
+        "alerts_open": 0,
+        "alerts_resolved": 3
+      }
+    },
+    
+    "compliance_metrics": {
+      "branch_protection": {
+        "enabled": true,
+        "rules": {
+          "require_pr_reviews": true,
+          "dismiss_stale_reviews": true,
+          "require_code_owner_reviews": true,
+          "required_status_checks": true,
+          "enforce_admins": false
+        }
+      },
+      "required_checks": ["ci/test", "ci/build", "security-scan"],
+      "codeowners_file": true,
+      "contributing_guidelines": true,
+      "code_of_conduct": true,
+      "license_compliance": "compliant"
+    },
+    
+    "workflow_metrics": {
+      "total_workflows": 8,
+      "active_workflows": 6,
+      "disabled_workflows": 2,
+      "runs_last_30_days": 245,
+      "success_rate": 0.92,
+      "average_duration": 8.5,
+      "by_status": {
+        "success": 225,
+        "failure": 15,
+        "cancelled": 5
+      },
+      "most_used_actions": [
+        {
+          "action": "actions/checkout",
+          "usage_count": 245
+        },
+        {
+          "action": "actions/setup-python",
+          "usage_count": 180
+        }
+      ]
+    },
+    
+    "deployment_metrics": {
+      "environments": ["production", "staging", "development"],
+      "deployments_last_30_days": 25,
+      "deployment_frequency": 0.83,
+      "lead_time": 4.2,
+      "mttr": 1.5,
+      "change_failure_rate": 0.08
+    },
+    
+    "dependency_metrics": {
+      "total": 145,
+      "direct": 35,
+      "transitive": 110,
+      "outdated": 12,
+      "by_ecosystem": {
+        "npm": 45,
+        "pip": 68,
+        "maven": 15,
+        "composer": 8,
+        "go": 9
+      },
+      "license_compliance": {
+        "compliant": 140,
+        "non_compliant": 3,
+        "unknown": 2
+      }
+    },
+    
+    "team_metrics": {
+      "velocity": {
+        "commits_per_week": 10.5,
+        "prs_per_week": 6.8,
+        "issues_closed_per_week": 3.2
+      },
+      "collaboration": {
+        "cross_team_contributions": 15,
+        "external_contributors": 3,
+        "mentoring_activities": 8,
+        "knowledge_sharing": 12
+      },
+      "code_review": {
+        "review_participation": 0.85,
+        "review_thoroughness": 3.2,
+        "review_speed": 4.2
+      }
+    },
+    
+    "ai_metrics": {
+      "copilot_usage": {
+        "enabled": true,
+        "suggestions_accepted": 1250,
+        "acceptance_rate": 0.65,
+        "active_users": 8
+      },
+      "automation": {
+        "auto_merge_rate": 0.25,
+        "automated_tests": 245,
+        "automated_deployments": 25
+      }
+    },
+    
+    "business_metrics": {
+      "feature_delivery": {
+        "features_delivered": 15,
+        "cycle_time": 12.5,
+        "customer_impact_score": 7.8
+      },
+      "technical_debt": {
+        "debt_ratio": 0.15,
+        "code_smells": 25,
+        "refactoring_tasks": 8
+      },
+      "innovation": {
+        "experiments": 3,
+        "new_technologies": ["FastAPI", "React Hooks", "GraphQL"],
+        "research_contributions": 2
+      }
+    },
+    
+    "resource_metrics": {
+      "storage_usage": 1568,
+      "bandwidth_usage": 2500,
+      "api_calls": 15000,
+      "actions_minutes": 1250,
+      "estimated_costs": {
+        "storage": 0.15,
+        "bandwidth": 0.25,
+        "actions": 12.50
+      }
+    }
+  }
+}
